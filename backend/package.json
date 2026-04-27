@@ -1,0 +1,19 @@
+{
+  "name": "todo-backend",
+  "version": "1.0.0",
+  "description": "Beginner-friendly Node.js backend for the Flutter todo app.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --no-warnings --watch src/server.js",
+    "start": "node --no-warnings src/server.js",
+    "test": "node --no-warnings --test"
+  },
+  "keywords": [
+    "todo",
+    "backend",
+    "node"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs"
+}
