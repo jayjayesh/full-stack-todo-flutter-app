@@ -22,6 +22,8 @@ Read them in this order:
 16. [Lesson 16: Frontend Auth Route Guards](docs/LESSON_16_FRONTEND_AUTH_ROUTE_GUARDS.md)
 17. [Lesson 17: Frontend Auth Provider Cleanup and Single Auth Source](docs/LESSON_17_FRONTEND_AUTH_PROVIDER_CLEANUP.md)
 18. [Lesson 18: Frontend Auth Screen Controller Lifecycle Cleanup](docs/LESSON_18_FRONTEND_AUTH_SCREEN_CONTROLLER_LIFECYCLE.md)
+19. [Lesson 19: Frontend Password Visibility Toggle](docs/LESSON_19_FRONTEND_PASSWORD_VISIBILITY_TOGGLE.md)
+20. [Lesson 20: Frontend Auth Loading and Error States Polish](docs/LESSON_20_FRONTEND_AUTH_LOADING_ERROR_STATES.md)
 
 Reference docs:
 
@@ -61,10 +63,12 @@ Lesson 15: Frontend logout and session cleanup polish
 Lesson 16: Frontend auth route guards
 Lesson 17: Frontend auth provider cleanup and single auth source
 Lesson 18: Frontend auth screen controller lifecycle cleanup
+Lesson 19: Frontend password visibility toggle
+Lesson 20: Frontend auth loading and error states polish
 ```
 
 Next recommended lesson:
 
 ```text
-Lesson 19: Frontend password visibility toggle
+Lesson 21: Frontend auth success navigation and messages polish
 ```

@@ -160,3 +160,54 @@ dispose() cleans them up
 ```
 
 This keeps text field state stable during rebuilds and prevents leaked controllers.
+
+## Password Visibility Toggle
+
+Password visibility is local UI state.
+
+The backend does not care whether a password field is currently hidden or visible, and no other screen needs that value.
+
+So the auth screens keep small booleans in their own state classes:
+
+```text
+_obscurePassword
+_obscureConfirmPassword
+```
+
+The fields are hidden by default.
+
+When the user taps the eye icon, the screen calls `setState`, flips the boolean, and rebuilds the field with the new `obscureText` value.
+
+```text
+true   hide the password text
+false  show the password text
+```
+
+The icon and tooltip also change so the button clearly says what action it will perform.
+
+## Auth Loading and Error States
+
+The auth provider now exposes a small form state instead of a plain boolean:
+
+```text
+AuthFormState
+isLoading
+errorMessage
+```
+
+This lets the auth screens show clear submit feedback.
+
+While login, signup, or forgot password is running, the screen shows an inline loading message and disables form controls.
+
+If the request fails, the controller stores the failure message in `errorMessage`.
+
+The screen displays that message near the form through `AuthStatusMessage`.
+
+The important separation is:
+
+```text
+Provider decides what happened.
+Screen decides how it looks.
+```
+
+When the user edits a field or starts another request, the old error is cleared so the screen does not keep showing stale feedback.

@@ -2,6 +2,7 @@ import 'package:todoflutterapp/src/imports/core_imports.dart';
 import 'package:todoflutterapp/src/imports/packages_imports.dart';
 
 import 'package:todoflutterapp/src/features/auth/presentation/providers/auth_provider.dart';
+import 'package:todoflutterapp/src/features/auth/presentation/widgets/auth_status_message.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -17,8 +18,26 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  static const _obscurePassword = true;
-  static const _obscureConfirmPassword = true;
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(authControllerProvider.notifier).clearError();
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscurePassword = !_obscurePassword;
+    });
+  }
+
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _obscureConfirmPassword = !_obscureConfirmPassword;
+    });
+  }
 
   @override
   void dispose() {
@@ -31,7 +50,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider);
+    final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
+    final errorMessage = authState.errorMessage;
 
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
@@ -41,7 +62,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         return;
       }
 
-      ref.read(authControllerProvider.notifier).signUp(
+      await ref.read(authControllerProvider.notifier).signUp(
             context: context,
             name: _nameController.text,
             email: _emailController.text,
@@ -80,6 +101,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         enabled: !isLoading,
                         label: 'auth.name'.tr(),
                         prefixIcon: const Icon(Icons.person_outline),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         validator: FormValidators.requiredName,
                       ),
                       SizedBox(height: AppSpacing.md),
@@ -89,6 +113,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         keyboardType: TextInputType.emailAddress,
                         label: 'auth.email'.tr(),
                         prefixIcon: const Icon(Icons.email_outlined),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         validator: FormValidators.requiredEmail,
                       ),
                       SizedBox(height: AppSpacing.md),
@@ -98,9 +125,20 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         label: 'auth.password'.tr(),
                         obscureText: _obscurePassword,
                         prefixIcon: const Icon(Icons.lock_outline),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.visibility),
-                          onPressed: () {},
+                          tooltip: _obscurePassword
+                              ? 'Show password'
+                              : 'Hide password',
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed:
+                              isLoading ? null : _togglePasswordVisibility,
                         ),
                         validator: FormValidators.requiredPassword,
                       ),
@@ -111,9 +149,21 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         label: 'auth.confirm_password'.tr(),
                         obscureText: _obscureConfirmPassword,
                         prefixIcon: const Icon(Icons.lock_outline),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.visibility),
-                          onPressed: () {},
+                          tooltip: _obscureConfirmPassword
+                              ? 'Show confirm password'
+                              : 'Hide confirm password',
+                          icon: Icon(
+                            _obscureConfirmPassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed: isLoading
+                              ? null
+                              : _toggleConfirmPasswordVisibility,
                         ),
                         validator: (value) =>
                             FormValidators.requiredConfirmPassword(
@@ -129,6 +179,11 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         width: ButtonSize.large,
                         isFullWidth: false,
                       ),
+                      AuthStatusMessage(
+                        isLoading: isLoading,
+                        loadingMessage: 'Creating account...',
+                        errorMessage: errorMessage,
+                      ),
                     ],
                   ),
                 ),
@@ -143,7 +198,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           width: 50,
                           height: 50,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: isLoading ? null : () {},
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFFEA4335)
                                   .withValues(alpha: 0.8),
@@ -160,7 +215,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           width: 50,
                           height: 50,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: isLoading ? null : () {},
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFF4285F4),
                               padding:
@@ -176,7 +231,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           width: 50,
                           height: 50,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: isLoading ? null : () {},
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFF000000),
                               padding:
@@ -194,7 +249,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   ],
                 ),
                 InkWell(
-                  onTap: () => Navigator.pop(context),
+                  onTap: isLoading ? null : () => Navigator.pop(context),
                   child: RichText(
                     text: TextSpan(
                       text: 'auth.already_have_account'.tr(),

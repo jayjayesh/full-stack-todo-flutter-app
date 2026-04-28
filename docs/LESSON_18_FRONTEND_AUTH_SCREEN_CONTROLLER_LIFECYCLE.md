@@ -140,7 +140,7 @@ That makes the app more stable, avoids leaked controllers, and keeps typed form 
 
 ## Next Recommended Lesson
 
-Lesson 19 can be:
+Lesson 19 is:
 
 ```text
 Frontend password visibility toggle

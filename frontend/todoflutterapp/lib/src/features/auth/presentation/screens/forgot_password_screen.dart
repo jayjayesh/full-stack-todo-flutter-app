@@ -2,6 +2,7 @@ import 'package:todoflutterapp/src/imports/core_imports.dart';
 import 'package:todoflutterapp/src/imports/packages_imports.dart';
 
 import 'package:todoflutterapp/src/features/auth/presentation/providers/auth_provider.dart';
+import 'package:todoflutterapp/src/features/auth/presentation/widgets/auth_status_message.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,6 +17,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    ref.read(authControllerProvider.notifier).clearError();
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     super.dispose();
@@ -23,7 +30,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider);
+    final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
+    final errorMessage = authState.errorMessage;
 
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
@@ -33,7 +42,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         return;
       }
 
-      ref.read(authControllerProvider.notifier).forgotPassword(
+      await ref.read(authControllerProvider.notifier).forgotPassword(
             context: context,
             email: _emailController.text,
           );
@@ -72,6 +81,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         keyboardType: TextInputType.emailAddress,
                         label: 'auth.email'.tr(),
                         prefixIcon: const Icon(Icons.email_outlined),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         validator: FormValidators.requiredEmail,
                       ),
                       SizedBox(height: AppSpacing.lg),
@@ -82,12 +94,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         width: ButtonSize.large,
                         isFullWidth: false,
                       ),
+                      AuthStatusMessage(
+                        isLoading: isLoading,
+                        loadingMessage: 'Sending reset link...',
+                        errorMessage: errorMessage,
+                      ),
                     ],
                   ),
                 ),
                 SizedBox(height: AppSpacing.xxxl),
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: isLoading ? null : () => Navigator.pop(context),
                   child: Text(
                     'auth.back_to_login'.tr(),
                     style: tt.labelLarge?.copyWith(

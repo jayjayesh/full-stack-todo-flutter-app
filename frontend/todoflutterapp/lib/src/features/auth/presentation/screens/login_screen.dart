@@ -2,6 +2,7 @@ import 'package:todoflutterapp/src/imports/core_imports.dart';
 import 'package:todoflutterapp/src/imports/packages_imports.dart';
 
 import 'package:todoflutterapp/src/features/auth/presentation/providers/auth_provider.dart';
+import 'package:todoflutterapp/src/features/auth/presentation/widgets/auth_status_message.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -15,7 +16,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  static const _obscurePassword = true;
+  bool _obscurePassword = true;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(authControllerProvider.notifier).clearError();
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscurePassword = !_obscurePassword;
+    });
+  }
 
   @override
   void dispose() {
@@ -26,7 +39,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider);
+    final authState = ref.watch(authControllerProvider);
+    final isLoading = authState.isLoading;
+    final errorMessage = authState.errorMessage;
 
     final cs = context.theme.colorScheme;
     final tt = context.theme.textTheme;
@@ -36,7 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         return;
       }
 
-      ref.read(authControllerProvider.notifier).login(
+      await ref.read(authControllerProvider.notifier).login(
             context: context,
             email: _emailController.text,
             password: _passwordController.text,
@@ -74,6 +89,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         enabled: !isLoading,
                         label: 'auth.email'.tr(),
                         prefixIcon: const Icon(Icons.email_outlined),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         validator: FormValidators.requiredEmail,
                       ),
                       SizedBox(height: AppSpacing.md),
@@ -83,9 +101,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         label: 'auth.password'.tr(),
                         obscureText: _obscurePassword,
                         prefixIcon: const Icon(Icons.lock_outline),
+                        onChanged: (_) => ref
+                            .read(authControllerProvider.notifier)
+                            .clearError(),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.visibility),
-                          onPressed: () {},
+                          tooltip: _obscurePassword
+                              ? 'Show password'
+                              : 'Hide password',
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                          ),
+                          onPressed:
+                              isLoading ? null : _togglePasswordVisibility,
                         ),
                         validator: FormValidators.requiredPassword,
                       ),
@@ -101,7 +130,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 height: 20,
                                 child: Checkbox(
                                   value: true,
-                                  onChanged: (value) {},
+                                  onChanged: isLoading ? null : (value) {},
                                 ),
                               ),
                               Text(
@@ -115,9 +144,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero,
                             ),
-                            onPressed: () {
-                              context.push(AppRoutes.forgotPassword);
-                            },
+                            onPressed: isLoading
+                                ? null
+                                : () {
+                                    context.push(AppRoutes.forgotPassword);
+                                  },
                             child: Text(
                               'auth.forgot_password'.tr(),
                               style: tt.bodySmall?.copyWith(
@@ -135,6 +166,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         width: ButtonSize.large,
                         isFullWidth: false,
                       ),
+                      AuthStatusMessage(
+                        isLoading: isLoading,
+                        loadingMessage: 'Signing in...',
+                        errorMessage: errorMessage,
+                      ),
                     ],
                   ),
                 ),
@@ -149,7 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 50,
                           height: 50,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: isLoading ? null : () {},
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFFEA4335)
                                   .withValues(alpha: 0.8),
@@ -166,7 +202,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 50,
                           height: 50,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: isLoading ? null : () {},
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFF4285F4),
                               padding:
@@ -182,7 +218,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 50,
                           height: 50,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: isLoading ? null : () {},
                             style: TextButton.styleFrom(
                               backgroundColor: const Color(0xFF000000),
                               padding:
@@ -200,9 +236,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ],
                 ),
                 InkWell(
-                  onTap: () {
-                    context.push(AppRoutes.signup);
-                  },
+                  onTap: isLoading
+                      ? null
+                      : () {
+                          context.push(AppRoutes.signup);
+                        },
                   child: RichText(
                     text: TextSpan(
                       text: 'auth.dont_have_account'.tr(),

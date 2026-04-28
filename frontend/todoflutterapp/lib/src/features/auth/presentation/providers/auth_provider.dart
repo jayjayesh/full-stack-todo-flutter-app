@@ -5,44 +5,81 @@ import 'package:todoflutterapp/src/features/auth/domain/repositories/auth_reposi
 import 'package:todoflutterapp/src/features/auth/presentation/providers/auth_repository_provider.dart';
 
 final authControllerProvider =
-    StateNotifierProvider<AuthController, bool>((ref) {
+    StateNotifierProvider<AuthController, AuthFormState>((ref) {
   return AuthController(
     repository: ref.read(authRepositoryProvider),
   );
 });
 
-class AuthController extends StateNotifier<bool> {
+class AuthFormState extends Equatable {
+  const AuthFormState({
+    this.isLoading = false,
+    this.errorMessage,
+  });
+
+  final bool isLoading;
+  final String? errorMessage;
+
+  AuthFormState copyWith({
+    bool? isLoading,
+    String? errorMessage,
+    bool clearError = false,
+  }) {
+    return AuthFormState(
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+    );
+  }
+
+  @override
+  List<Object?> get props => [isLoading, errorMessage];
+}
+
+class AuthController extends StateNotifier<AuthFormState> {
   final AuthRepository _repository;
 
   AuthController({
     required AuthRepository repository,
   })  : _repository = repository,
-        super(false); // loading state is false
+        super(const AuthFormState());
 
-  void login({
+  void clearError() {
+    if (state.errorMessage == null) return;
+    state = state.copyWith(clearError: true);
+  }
+
+  Future<void> login({
     required BuildContext context,
     required String email,
     required String password,
   }) async {
-    state = true;
+    state = state.copyWith(isLoading: true, clearError: true);
 
     final result = await _repository.login(email: email, password: password);
 
-    state = false;
+    if (!mounted) return;
+
     result.fold(
-      (failure) =>
-          showToast(context, message: failure.message, status: 'error'),
-      (_) {},
+      (failure) {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: failure.message,
+        );
+        if (context.mounted) {
+          showToast(context, message: failure.message, status: 'error');
+        }
+      },
+      (_) => state = state.copyWith(isLoading: false, clearError: true),
     );
   }
 
-  void signUp({
+  Future<void> signUp({
     required BuildContext context,
     required String name,
     required String email,
     required String password,
   }) async {
-    state = true;
+    state = state.copyWith(isLoading: true, clearError: true);
 
     final result = await _repository.signUp(
       name: name,
@@ -50,31 +87,52 @@ class AuthController extends StateNotifier<bool> {
       password: password,
     );
 
-    state = false;
+    if (!mounted) return;
+
     result.fold(
-      (failure) =>
-          showToast(context, message: failure.message, status: 'error'),
-      (_) {},
+      (failure) {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: failure.message,
+        );
+        if (context.mounted) {
+          showToast(context, message: failure.message, status: 'error');
+        }
+      },
+      (_) => state = state.copyWith(isLoading: false, clearError: true),
     );
   }
 
-  void forgotPassword(
-      {required BuildContext context, required String email}) async {
-    state = true;
+  Future<void> forgotPassword({
+    required BuildContext context,
+    required String email,
+  }) async {
+    state = state.copyWith(isLoading: true, clearError: true);
 
     final result = await _repository.forgotPassword(email: email);
 
-    state = false;
+    if (!mounted) return;
+
     result.fold(
-      (failure) =>
-          showToast(context, message: failure.message, status: 'error'),
-      (success) {
-        showToast(context,
-            message: 'Password reset link sent successfully',
-            status: 'success');
+      (failure) {
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: failure.message,
+        );
         if (context.mounted) {
-          context.go(AppRoutes.login);
+          showToast(context, message: failure.message, status: 'error');
         }
+      },
+      (success) {
+        state = state.copyWith(isLoading: false, clearError: true);
+        if (!context.mounted) return;
+
+        showToast(
+          context,
+          message: 'Password reset link sent successfully',
+          status: 'success',
+        );
+        context.go(AppRoutes.login);
       },
     );
   }
