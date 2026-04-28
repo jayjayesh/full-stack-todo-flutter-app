@@ -366,6 +366,10 @@ class _TodoListItem extends ConsumerWidget {
 
   final Todo todo;
 
+  void _toggleTodo(WidgetRef ref) {
+    ref.read(todoControllerProvider.notifier).toggleTodo(todo);
+  }
+
   Future<void> _editTodo(BuildContext context, WidgetRef ref) async {
     final updatedTitle = await showDialog<String>(
       context: context,
@@ -391,24 +395,33 @@ class _TodoListItem extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Checkbox(
-            value: todo.isCompleted,
-            onChanged: (_) {
-              ref.read(todoControllerProvider.notifier).toggleTodo(todo);
-            },
-          ),
           Expanded(
-            child: Text(
-              todo.title,
-              style: textTheme.bodyLarge?.copyWith(
-                color: todo.isCompleted
-                    ? colorScheme.onSurfaceVariant
-                    : colorScheme.onSurface,
-                decoration:
-                    todo.isCompleted ? TextDecoration.lineThrough : null,
+            child: InkWell(
+              onTap: () => _toggleTodo(ref),
+              borderRadius: BorderRadius.circular(12),
+              child: Row(
+                children: [
+                  Checkbox(
+                    value: todo.isCompleted,
+                    onChanged: (_) => _toggleTodo(ref),
+                  ),
+                  Expanded(
+                    child: Text(
+                      todo.title,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: todo.isCompleted
+                            ? colorScheme.onSurfaceVariant
+                            : colorScheme.onSurface,
+                        decoration: todo.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
           ),
           IconButton(

@@ -110,10 +110,10 @@ class TodoController extends StateNotifier<TodoState> {
   }
 
   Future<void> toggleTodo(Todo todo) async {
-    final previousTodo = state.todos.firstWhere(
-      (item) => item.id == todo.id,
-      orElse: () => todo,
-    );
+    final existingIndex = state.todos.indexWhere((item) => item.id == todo.id);
+    if (existingIndex == -1) return;
+
+    final previousTodo = state.todos[existingIndex];
     final optimisticTodo = previousTodo.copyWith(
       isCompleted: !previousTodo.isCompleted,
     );
@@ -156,10 +156,10 @@ class TodoController extends StateNotifier<TodoState> {
     final cleanedTitle = title.trim();
     if (cleanedTitle.isEmpty || cleanedTitle == todo.title) return;
 
-    final previousTodo = state.todos.firstWhere(
-      (item) => item.id == todo.id,
-      orElse: () => todo,
-    );
+    final existingIndex = state.todos.indexWhere((item) => item.id == todo.id);
+    if (existingIndex == -1) return;
+
+    final previousTodo = state.todos[existingIndex];
     final optimisticTodo = previousTodo.copyWith(title: cleanedTitle);
 
     state = state.copyWith(
