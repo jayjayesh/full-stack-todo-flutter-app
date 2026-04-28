@@ -52,7 +52,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(true),
-              icon: const Icon(Icons.logout_rounded),
+              // icon: const Icon(Icons.logout_rounded),
               label: const Text('Log out'),
             ),
           ],
@@ -95,6 +95,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       backgroundColor: colorScheme.surface,
       appBar: AppTopBar(
         title: 'My Todos',
+        showBackButton: false,
         actions: [
           IconButton(
             tooltip: 'Refresh',

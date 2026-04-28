@@ -275,7 +275,9 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
         return colorScheme.outline;
       }),
       trackColor: WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.selected)) return colorScheme.primaryContainer;
+        if (states.contains(WidgetState.selected)) {
+          return colorScheme.primaryContainer;
+        }
         return colorScheme.surfaceContainerHighest;
       }),
     ),
@@ -294,8 +296,13 @@ ThemeData _buildTheme(ColorScheme colorScheme, AppColorsExtension customColors) 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       elevation: 0,
       backgroundColor: colorScheme.surface,
-      titleTextStyle: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-      contentTextStyle: textTheme.bodyMedium,
+      titleTextStyle: textTheme.titleLarge?.copyWith(
+        color: colorScheme.onSurface,
+        fontWeight: FontWeight.bold,
+      ),
+      contentTextStyle: textTheme.bodyMedium?.copyWith(
+        color: colorScheme.onSurfaceVariant,
+      ),
     ),
 
     // Bottom Sheet Theme

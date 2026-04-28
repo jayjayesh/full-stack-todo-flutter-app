@@ -17,6 +17,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  final bool _showSocialSignIn = false;
 
   @override
   void initState() {
@@ -175,66 +176,67 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: AppSpacing.xxxl),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 20,
-                      children: [
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: TextButton(
-                            onPressed: isLoading ? null : () {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFFEA4335)
-                                  .withValues(alpha: 0.8),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: AppBorders.button,
+                if (_showSocialSignIn)
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 20,
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: TextButton(
+                              onPressed: isLoading ? null : () {},
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFFEA4335)
+                                    .withValues(alpha: 0.8),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: AppBorders.button,
+                                ),
                               ),
+                              child: SvgPicture.asset(AppAssets.googleIcon),
                             ),
-                            child: SvgPicture.asset(AppAssets.googleIcon),
                           ),
-                        ),
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: TextButton(
-                            onPressed: isLoading ? null : () {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF4285F4),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: AppBorders.button,
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: TextButton(
+                              onPressed: isLoading ? null : () {},
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFF4285F4),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: AppBorders.button,
+                                ),
                               ),
+                              child: SvgPicture.asset(AppAssets.facebookIcon),
                             ),
-                            child: SvgPicture.asset(AppAssets.facebookIcon),
                           ),
-                        ),
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: TextButton(
-                            onPressed: isLoading ? null : () {},
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF000000),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: AppBorders.button,
+                          SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: TextButton(
+                              onPressed: isLoading ? null : () {},
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFF000000),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: AppBorders.button,
+                                ),
                               ),
+                              child: SvgPicture.asset(AppAssets.appleIcon),
                             ),
-                            child: SvgPicture.asset(AppAssets.appleIcon),
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: AppSpacing.xl),
-                  ],
-                ),
+                        ],
+                      ),
+                      SizedBox(height: AppSpacing.xl),
+                    ],
+                  ),
                 InkWell(
                   onTap: isLoading
                       ? null
