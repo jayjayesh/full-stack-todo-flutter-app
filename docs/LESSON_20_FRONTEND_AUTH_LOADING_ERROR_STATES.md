@@ -158,7 +158,7 @@ That keeps each layer simple and gives the user clearer feedback.
 
 ## Next Recommended Lesson
 
-Lesson 21 can be:
+Lesson 21 is:
 
 ```text
 Frontend auth success navigation and messages polish

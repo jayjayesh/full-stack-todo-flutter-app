@@ -211,3 +211,36 @@ Screen decides how it looks.
 ```
 
 When the user edits a field or starts another request, the old error is cleared so the screen does not keep showing stale feedback.
+
+## Auth Success Navigation and Messages
+
+Login and signup now return a simple success result to the screen:
+
+```text
+true   auth worked
+false  auth failed
+```
+
+The provider still owns request state like loading and error messages.
+
+The screen owns the user-facing success behavior:
+
+```text
+show a success toast
+navigate to Home
+```
+
+After success, the auth screens use `context.go(AppRoutes.home)`.
+
+That matters because login/signup should replace the current auth route instead of stacking Home on top of it.
+
+So the user does not finish login, land on Home, and then use the back button to return to the auth form.
+
+The rule is:
+
+```text
+Use push when the user is temporarily opening another page.
+Use go when the app is changing to a new main route.
+```
+
+Auth success is a main route change, so `go` is the better fit.
