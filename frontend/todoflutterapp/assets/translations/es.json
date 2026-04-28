@@ -45,7 +45,9 @@
     "forgot_password_title": "Forgot Password",
     "forgot_password_subtitle": "Enter your email address to receive a reset link\nand regain access to your account.",
     "back_to_login": "Back to login",
-    "reset_link_sent": "Password reset link sent to your email."
+    "reset_link_sent": "Password reset link sent to your email.",
+    "login_success": "You are signed in.",
+    "signup_success": "Your account is ready."
   },
   "todos": {
     "title_required": "Todo title is required",

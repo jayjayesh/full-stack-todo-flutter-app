@@ -48,8 +48,7 @@ class AuthController extends StateNotifier<AuthFormState> {
     state = state.copyWith(clearError: true);
   }
 
-  Future<void> login({
-    required BuildContext context,
+  Future<bool> login({
     required String email,
     required String password,
   }) async {
@@ -57,24 +56,24 @@ class AuthController extends StateNotifier<AuthFormState> {
 
     final result = await _repository.login(email: email, password: password);
 
-    if (!mounted) return;
+    if (!mounted) return false;
 
-    result.fold(
+    return result.fold(
       (failure) {
         state = state.copyWith(
           isLoading: false,
           errorMessage: failure.message,
         );
-        if (context.mounted) {
-          showToast(context, message: failure.message, status: 'error');
-        }
+        return false;
       },
-      (_) => state = state.copyWith(isLoading: false, clearError: true),
+      (_) {
+        state = state.copyWith(isLoading: false, clearError: true);
+        return true;
+      },
     );
   }
 
-  Future<void> signUp({
-    required BuildContext context,
+  Future<bool> signUp({
     required String name,
     required String email,
     required String password,
@@ -87,19 +86,20 @@ class AuthController extends StateNotifier<AuthFormState> {
       password: password,
     );
 
-    if (!mounted) return;
+    if (!mounted) return false;
 
-    result.fold(
+    return result.fold(
       (failure) {
         state = state.copyWith(
           isLoading: false,
           errorMessage: failure.message,
         );
-        if (context.mounted) {
-          showToast(context, message: failure.message, status: 'error');
-        }
+        return false;
       },
-      (_) => state = state.copyWith(isLoading: false, clearError: true),
+      (_) {
+        state = state.copyWith(isLoading: false, clearError: true);
+        return true;
+      },
     );
   }
 

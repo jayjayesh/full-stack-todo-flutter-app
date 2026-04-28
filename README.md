@@ -26,6 +26,7 @@ This project contains a Flutter frontend, a Node.js backend, and beginner-friend
 18. [Lesson 18: Frontend Auth Screen Controller Lifecycle Cleanup](docs/LESSON_18_FRONTEND_AUTH_SCREEN_CONTROLLER_LIFECYCLE.md)
 19. [Lesson 19: Frontend Password Visibility Toggle](docs/LESSON_19_FRONTEND_PASSWORD_VISIBILITY_TOGGLE.md)
 20. [Lesson 20: Frontend Auth Loading and Error States Polish](docs/LESSON_20_FRONTEND_AUTH_LOADING_ERROR_STATES.md)
+21. [Lesson 21: Frontend Auth Success Navigation and Messages Polish](docs/LESSON_21_FRONTEND_AUTH_SUCCESS_NAVIGATION.md)
 
 Reference docs:
 
