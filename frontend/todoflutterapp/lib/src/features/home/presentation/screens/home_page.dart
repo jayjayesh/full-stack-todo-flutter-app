@@ -187,7 +187,7 @@ class _TodoComposer extends StatelessWidget {
             SizedBox(width: AppSpacing.sm),
             SizedBox.square(
               dimension: 48,
-              child: IconButton.filled(
+              child: IconButton.outlined(
                 tooltip: 'Add todo',
                 onPressed: isSaving ? null : onSubmit,
                 icon: isSaving
