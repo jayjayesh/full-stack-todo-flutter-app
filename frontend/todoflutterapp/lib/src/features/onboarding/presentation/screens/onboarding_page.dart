@@ -1,3 +1,4 @@
+import 'package:todoflutterapp/resources/resources.dart';
 import 'package:todoflutterapp/src/imports/core_imports.dart';
 import 'package:todoflutterapp/src/imports/packages_imports.dart';
 
@@ -22,17 +23,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
       {
         'title': 'onboarding.onboarding_title_1'.tr(),
         'subtitle': 'onboarding.onboarding_subtitle_1'.tr(),
-        'pageWidget': const FlutterLogo(size: 200),
+        'pageWidget': const Image(
+            image: AssetImage(Images.appIcon), height: 100, width: 100),
+        // 'pageWidget': const FlutterLogo(size: 200),
       },
       {
         'title': 'onboarding.onboarding_title_2'.tr(),
         'subtitle': 'onboarding.onboarding_subtitle_2'.tr(),
-        'pageWidget': const FlutterLogo(size: 200),
+        'pageWidget': const Image(
+            image: AssetImage(Images.appIcon), height: 100, width: 100),
+        // 'pageWidget': const FlutterLogo(size: 200),
       },
       {
         'title': 'onboarding.onboarding_title_3'.tr(),
         'subtitle': 'onboarding.onboarding_subtitle_3'.tr(),
-        'pageWidget': const FlutterLogo(size: 200),
+        'pageWidget': const Image(
+            image: AssetImage(Images.appIcon), height: 100, width: 100),
+        // 'pageWidget': const FlutterLogo(size: 200),
       },
     ];
   }
