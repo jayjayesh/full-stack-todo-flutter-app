@@ -17,6 +17,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
+  bool _rememberMe = true;
   final bool _showSocialSignIn = false;
 
   @override
@@ -28,6 +29,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _togglePasswordVisibility() {
     setState(() {
       _obscurePassword = !_obscurePassword;
+    });
+  }
+
+  void _toggleRememberMe(bool? value) {
+    setState(() {
+      _rememberMe = value ?? false;
     });
   }
 
@@ -138,8 +145,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 width: 20,
                                 height: 20,
                                 child: Checkbox(
-                                  value: true,
-                                  onChanged: isLoading ? null : (value) {},
+                                  value: _rememberMe,
+                                  onChanged:
+                                      isLoading ? null : _toggleRememberMe,
                                 ),
                               ),
                               Text(
