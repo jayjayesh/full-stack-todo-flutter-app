@@ -103,36 +103,26 @@ class AuthController extends StateNotifier<AuthFormState> {
     );
   }
 
-  Future<void> forgotPassword({
-    required BuildContext context,
+  Future<bool> forgotPassword({
     required String email,
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
 
     final result = await _repository.forgotPassword(email: email);
 
-    if (!mounted) return;
+    if (!mounted) return false;
 
-    result.fold(
+    return result.fold(
       (failure) {
         state = state.copyWith(
           isLoading: false,
           errorMessage: failure.message,
         );
-        if (context.mounted) {
-          showToast(context, message: failure.message, status: 'error');
-        }
+        return false;
       },
       (success) {
         state = state.copyWith(isLoading: false, clearError: true);
-        if (!context.mounted) return;
-
-        showToast(
-          context,
-          message: 'Password reset link sent successfully',
-          status: 'success',
-        );
-        context.go(AppRoutes.login);
+        return true;
       },
     );
   }
