@@ -1,4 +1,3 @@
-import 'package:todoflutterapp/src/imports/core_imports.dart';
 import 'package:todoflutterapp/src/imports/packages_imports.dart';
 
 import 'package:todoflutterapp/src/features/auth/domain/repositories/auth_repository.dart';
