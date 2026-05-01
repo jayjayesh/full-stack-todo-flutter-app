@@ -44,7 +44,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
       await ref.read(authControllerProvider.notifier).forgotPassword(
             context: context,
-            email: _emailController.text,
+            email: _emailController.text.trim(),
           );
     }
 
