@@ -45,7 +45,7 @@ This file tracks what has been completed and what we should work on next for the
 - Backend and frontend are both structured into maintainable modules
 - Project includes documentation for the completed learning milestones
 
-## Next Tasks To Do
+## Next Recommended Steps
 
 - [ ] Review the current app end-to-end and note any broken flows
 - [ ] Run backend and Flutter tests and capture the current baseline
@@ -62,8 +62,28 @@ This file tracks what has been completed and what we should work on next for the
 
 - Added `PROGRESS.md` to track completed work and upcoming tasks
 
-## How To Use This File
+## How To Use This File With Codex/Claude - v1
 
 - Add a short note under `Update Log` after each meaningful change
 - Move finished items into `Work Completed`
-- Keep `Next Tasks To Do` limited to the next 3 to 5 actionable items
+- Keep `Next Recommended Steps` limited to the next 3 to 5 actionable items
+
+## How To Use This File With Codex/Claude - v2
+
+At the start of a new session, ask:
+
+```text
+Read PROGRESS.md and README.md first, then tell me the current project status and the next best step.
+```
+
+After Codex changes code, ask:
+
+```text
+Update PROGRESS.md with what changed, files touched, tests run, known issues, and the next recommended step.
+```
+
+When you are confused about what changed, ask:
+
+```text
+Compare git diff with PROGRESS.md and explain the changes in beginner-friendly language.
+```
