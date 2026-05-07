@@ -26,6 +26,7 @@ class App extends ConsumerWidget {
         Widget current = child!;
         current = SkeletonWrapper(child: current);
         current = SessionListenerWrapper(child: current);
+        current = DismissKeyboardWrapper(child: current);
         return current;
       },
     );
