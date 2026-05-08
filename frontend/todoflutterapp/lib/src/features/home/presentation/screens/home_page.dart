@@ -383,6 +383,33 @@ class _TodoListItem extends ConsumerWidget {
         .updateTodoTitle(todo, updatedTitle);
   }
 
+  Future<void> _confirmDeleteTodo(BuildContext context, WidgetRef ref) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete todo?'),
+          content: Text('Are you sure you want to delete "${todo.title}"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton.icon(
+              onPressed: () => Navigator.of(context).pop(true),
+              icon: const Icon(Icons.delete_outline_rounded),
+              label: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    await ref.read(todoControllerProvider.notifier).deleteTodo(todo);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = context.theme.colorScheme;
@@ -433,9 +460,7 @@ class _TodoListItem extends ConsumerWidget {
           ),
           IconButton(
             tooltip: 'Delete todo',
-            onPressed: () {
-              ref.read(todoControllerProvider.notifier).deleteTodo(todo);
-            },
+            onPressed: () => _confirmDeleteTodo(context, ref),
             icon: Icon(
               Icons.delete_outline_rounded,
               color: colorScheme.error,
