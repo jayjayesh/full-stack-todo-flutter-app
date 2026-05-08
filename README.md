@@ -2,6 +2,19 @@
 
 This project contains a Flutter frontend, a Node.js backend, and beginner-friendly learning notes in `docs/`.
 
+## How to Run
+
+```bash
+cd backend
+npm run dev
+```
+
+```bash
+cd frontend/todoflutterapp
+flutter pub get
+flutter run
+```
+
 ## Learning Path
 
 #### Read them in this order:
