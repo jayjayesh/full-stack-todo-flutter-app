@@ -44,19 +44,31 @@ This file tracks what has been completed and what we should work on next for the
 - Todo CRUD flow is present
 - Backend and frontend are both structured into maintainable modules
 - Project includes documentation for the completed learning milestones
+- Repository guidance now includes an `AGENTS.md` workflow note for contributors/agents
 
 ## Next Recommended Steps
 
-- [ ] Review the current app end-to-end and note any broken flows
-- [ ] Run backend and Flutter tests and capture the current baseline
-- [ ] Identify the next feature milestone after lesson 21
-- [ ] Add this tracker to the regular workflow and update it after each task
+- [ ] Run backend and Flutter tests and record the current baseline in `PROGRESS.md`
+- [ ] Review the app end-to-end to confirm auth and todo flows still work as expected
+- [ ] Choose and start the next milestone after lesson 21, based on any issues found during testing
 
 ## Current Focus
 
-- Keep this file updated as the source of truth for recent work and the next priority
+- Keep this file updated as the source of truth for recent work, test status, and the next priority
 
 ## Update Log
+
+### 2026-05-11
+
+- Added `AGENTS.md` with project overview, source-of-truth guidance, agent expectations, and recommended workflow
+- No frontend or backend application code changed today
+- Files touched today:
+  - `AGENTS.md`
+- Tests run today:
+  - None recorded
+- Known issues / follow-up:
+  - Current backend and Flutter test baseline has not been re-run and documented after the latest documentation/process update
+  - No new product issues were identified today because today’s change was documentation-only
 
 ### 2026-05-07
 
