@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todoflutterapp/src/features/auth/domain/entities/user.dart';
 import 'package:todoflutterapp/src/features/auth/domain/repositories/auth_repository.dart';
@@ -33,6 +34,7 @@ void main() {
   testWidgets('cancel keeps todo and does not call delete', (tester) async {
     final todoRepository = _FakeTodoRepository(initialTodos: [todo]);
 
+    await EasyLocalization.ensureInitialized();
     await tester.pumpWidget(
       _TestApp(
         todoRepository: todoRepository,
@@ -44,12 +46,12 @@ void main() {
     expect(find.text(todo.title), findsOneWidget);
 
     await tester.tap(find.byTooltip('Delete todo').first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 250));
 
     expect(find.text('Delete todo?'), findsOneWidget);
 
     await tester.tap(find.text('Cancel'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 250));
 
     expect(find.text(todo.title), findsOneWidget);
     expect(todoRepository.deleteCallCount, 0);
@@ -60,6 +62,7 @@ void main() {
       initialTodos: [todo, anotherTodo],
     );
 
+    await EasyLocalization.ensureInitialized();
     await tester.pumpWidget(
       _TestApp(
         todoRepository: todoRepository,
@@ -71,10 +74,10 @@ void main() {
     expect(find.text(todo.title), findsOneWidget);
 
     await tester.tap(find.byTooltip('Delete todo').first);
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 250));
 
     await tester.tap(find.text('Delete'));
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 250));
 
     expect(find.text(todo.title), findsNothing);
     expect(find.text(anotherTodo.title), findsOneWidget);
@@ -98,13 +101,28 @@ class _TestApp extends StatelessWidget {
       ],
     );
 
-    return ProviderScope(
-      overrides: [
-        todoRepositoryProvider.overrideWithValue(todoRepository),
-        authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
+    return EasyLocalization(
+      supportedLocales: const [
+        Locale('en'),
+        Locale('hi'),
       ],
-      child: MaterialApp.router(
-        routerConfig: router,
+      path: 'assets/translations',
+      fallbackLocale: const Locale('en'),
+      child: Builder(
+        builder: (context) {
+          return ProviderScope(
+            overrides: [
+              todoRepositoryProvider.overrideWithValue(todoRepository),
+              authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
+            ],
+            child: MaterialApp.router(
+              routerConfig: router,
+              locale: context.locale,
+              supportedLocales: context.supportedLocales,
+              localizationsDelegates: context.localizationDelegates,
+            ),
+          );
+        },
       ),
     );
   }

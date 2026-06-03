@@ -140,8 +140,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                             .clearError(),
                         suffixIcon: IconButton(
                           tooltip: _obscurePassword
-                              ? 'Show password'
-                              : 'Hide password',
+                              ? 'auth.show_password'.tr()
+                              : 'auth.hide_password'.tr(),
                           icon: Icon(
                             _obscurePassword
                                 ? Icons.visibility_outlined
@@ -164,8 +164,8 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                             .clearError(),
                         suffixIcon: IconButton(
                           tooltip: _obscureConfirmPassword
-                              ? 'Show confirm password'
-                              : 'Hide confirm password',
+                              ? 'auth.show_confirm_password'.tr()
+                              : 'auth.hide_confirm_password'.tr(),
                           icon: Icon(
                             _obscureConfirmPassword
                                 ? Icons.visibility_outlined
@@ -183,7 +183,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       ),
                       SizedBox(height: AppSpacing.lg),
                       AppButton(
-                        label: 'Create Account',
+                        label: 'auth.create_account_button'.tr(),
                         isLoading: isLoading,
                         onPressed: isLoading ? null : handleSignup,
                         width: ButtonSize.large,
@@ -191,7 +191,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                       ),
                       AuthStatusMessage(
                         isLoading: isLoading,
-                        loadingMessage: 'Creating account...',
+                        loadingMessage: 'auth.creating_account'.tr(),
                         errorMessage: errorMessage,
                       ),
                     ],

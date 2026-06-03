@@ -43,17 +43,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Log out?'),
-          content: const Text('This will clear this session on this device.'),
+          title: Text('home.log_out_title'.tr()),
+          content: Text('home.log_out_message'.tr()),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text('home.cancel'.tr()),
             ),
             FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(true),
               // icon: const Icon(Icons.logout_rounded),
-              label: const Text('Log out'),
+              label: Text('home.log_out'.tr()),
             ),
           ],
         );
@@ -94,18 +94,18 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppTopBar(
-        title: 'My Todos',
+        title: 'home.home_title'.tr(),
         showBackButton: false,
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: 'home.refresh'.tr(),
             onPressed: todoState.isLoading
                 ? null
                 : ref.read(todoControllerProvider.notifier).loadTodos,
             icon: const Icon(Icons.refresh_rounded),
           ),
           IconButton(
-            tooltip: 'Log out',
+            tooltip: 'home.log_out'.tr(),
             onPressed: session.isLoggingOut ? null : _confirmLogout,
             icon: session.isLoggingOut
                 ? const SizedBox.square(
@@ -123,7 +123,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             padding: EdgeInsets.all(AppSpacing.md),
             children: [
               Text(
-                'Welcome, ${user?.name ?? user?.email ?? 'friend'}',
+                'home.welcome_user'.tr(namedArgs: {
+                  'name': user?.name ?? user?.email ?? 'home.friend'.tr(),
+                }),
                 style: textTheme.titleLarge?.copyWith(
                   color: colorScheme.onSurface,
                   fontWeight: FontWeight.w800,
@@ -178,7 +180,7 @@ class _TodoComposer extends StatelessWidget {
               child: AppTextField(
                 controller: controller,
                 enabled: !isSaving,
-                hint: 'Add a new todo',
+                hint: 'home.add_todo_hint'.tr(),
                 textInputAction: TextInputAction.done,
                 validator: FormValidators.requiredTodoTitle,
                 onFieldSubmitted: (_) => onSubmit(),
@@ -188,7 +190,7 @@ class _TodoComposer extends StatelessWidget {
             SizedBox.square(
               dimension: 48,
               child: IconButton.outlined(
-                tooltip: 'Add todo',
+                tooltip: 'home.add_todo'.tr(),
                 onPressed: isSaving ? null : onSubmit,
                 icon: isSaving
                     ? const SizedBox.square(
@@ -220,11 +222,11 @@ class _TodoStats extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: _StatTile(label: 'Total', value: total)),
+        Expanded(child: _StatTile(label: 'home.total'.tr(), value: total)),
         SizedBox(width: AppSpacing.sm),
-        Expanded(child: _StatTile(label: 'Active', value: active)),
+        Expanded(child: _StatTile(label: 'home.active'.tr(), value: active)),
         SizedBox(width: AppSpacing.sm),
-        Expanded(child: _StatTile(label: 'Done', value: completed)),
+        Expanded(child: _StatTile(label: 'home.done'.tr(), value: completed)),
       ],
     );
   }
@@ -280,15 +282,15 @@ class _TodoListSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (state.isLoading && state.todos.isEmpty) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.symmetric(vertical: 48),
-        child: AppLoading(message: 'Loading your todos...'),
+        child: AppLoading(message: 'home.loading_todos'.tr()),
       );
     }
 
     if (state.errorMessage != null && state.todos.isEmpty) {
       return AppErrorWidget(
-        title: 'Could not load todos',
+        title: 'home.could_not_load_todos'.tr(),
         message: state.errorMessage,
         onRetry: ref.read(todoControllerProvider.notifier).loadTodos,
       );
@@ -297,9 +299,9 @@ class _TodoListSection extends ConsumerWidget {
     if (state.todos.isEmpty) {
       return AppEmptyState(
         icon: Icons.check_circle_outline_rounded,
-        title: 'No todos yet',
-        subtitle: 'Add your first todo above.',
-        actionLabel: 'Refresh',
+        title: 'home.no_todos_yet'.tr(),
+        subtitle: 'home.add_first_todo_above'.tr(),
+        actionLabel: 'home.refresh'.tr(),
         onAction: ref.read(todoControllerProvider.notifier).loadTodos,
       );
     }
@@ -348,7 +350,7 @@ class _TodoRefreshStatus extends StatelessWidget {
             ),
             SizedBox(width: AppSpacing.sm),
             Text(
-              'Refreshing todos...',
+              'home.refreshing_todos'.tr(),
               style: textTheme.bodySmall?.copyWith(
                 color: colorScheme.onPrimaryContainer,
                 fontWeight: FontWeight.w600,
@@ -388,17 +390,21 @@ class _TodoListItem extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete todo?'),
-          content: Text('Are you sure you want to delete "${todo.title}"?'),
+          title: Text('home.delete_todo_title'.tr()),
+          content: Text(
+            'home.delete_todo_message'.tr(
+              namedArgs: {'title': todo.title},
+            ),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text('home.cancel'.tr()),
             ),
             FilledButton.icon(
               onPressed: () => Navigator.of(context).pop(true),
               icon: const Icon(Icons.delete_outline_rounded),
-              label: const Text('Delete'),
+              label: Text('home.delete'.tr()),
             ),
           ],
         );
@@ -452,14 +458,14 @@ class _TodoListItem extends ConsumerWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Edit todo',
+            tooltip: 'home.edit_todo'.tr(),
             onPressed: () {
               _editTodo(context, ref);
             },
             icon: const Icon(Icons.edit_outlined),
           ),
           IconButton(
-            tooltip: 'Delete todo',
+            tooltip: 'home.delete_todo'.tr(),
             onPressed: () => _confirmDeleteTodo(context, ref),
             icon: Icon(
               Icons.delete_outline_rounded,
@@ -508,13 +514,13 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Edit todo'),
+      title: Text('home.edit_todo'.tr()),
       content: Form(
         key: _formKey,
         child: AppTextField(
           controller: _controller,
           autofocus: true,
-          label: 'Todo title',
+          label: 'home.todo_title'.tr(),
           textInputAction: TextInputAction.done,
           validator: FormValidators.requiredTodoTitle,
           onFieldSubmitted: (_) => _submit(),
@@ -523,12 +529,12 @@ class _EditTodoDialogState extends State<_EditTodoDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text('home.cancel'.tr()),
         ),
         FilledButton.icon(
           onPressed: _submit,
           icon: const Icon(Icons.save_outlined),
-          label: const Text('Save'),
+          label: Text('home.save'.tr()),
         ),
       ],
     );

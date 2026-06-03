@@ -15,7 +15,7 @@ void main() {
     await tester.pumpWidget(EasyLocalization(
       supportedLocales: const [
         Locale('en'),
-        Locale('es'),
+        Locale('hi'),
       ],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
@@ -24,5 +24,38 @@ void main() {
 
     // Verify that our base app builds successfully.
     expect(find.byType(App), findsOneWidget);
+  });
+
+  testWidgets('Hindi translations load correctly', (WidgetTester tester) async {
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+
+    await tester.pumpWidget(
+      EasyLocalization(
+        supportedLocales: const [
+          Locale('en'),
+          Locale('hi'),
+        ],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en'),
+        startLocale: const Locale('hi'),
+        child: Builder(
+          builder: (context) {
+            return MaterialApp(
+              locale: context.locale,
+              supportedLocales: context.supportedLocales,
+              localizationsDelegates: context.localizationDelegates,
+              home: Scaffold(
+                body: Text('auth.log_in'.tr()),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('लॉग इन'), findsOneWidget);
   });
 }

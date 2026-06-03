@@ -1,6 +1,7 @@
 {
   "shared": {
-    "get_started": "Get Started"
+    "get_started": "Get Started",
+    "try_again": "Try Again"
   },
   "onboarding": {
     "onboarding_title_1": "Your Journey,\nPerfectly Planned",
@@ -11,9 +12,33 @@
     "onboarding_subtitle_3": "Find trending destinations and must-see attractions,\nall tailored to enhance your travel plans."
   },
   "home": {
-    "home_title": "Home",
+    "home_title": "My Todos",
     "welcome_home": "Welcome Home!",
-    "home_subtitle": "You have successfully completed the onboarding process."
+    "home_subtitle": "You have successfully completed the onboarding process.",
+    "welcome_user": "Welcome, {name}",
+    "friend": "friend",
+    "loading_todos": "Loading your todos...",
+    "refreshing_todos": "Refreshing todos...",
+    "refresh": "Refresh",
+    "log_out": "Log out",
+    "log_out_title": "Log out?",
+    "log_out_message": "This will clear this session on this device.",
+    "cancel": "Cancel",
+    "add_todo": "Add todo",
+    "add_todo_hint": "Add a new todo",
+    "total": "Total",
+    "active": "Active",
+    "done": "Done",
+    "could_not_load_todos": "Could not load todos",
+    "no_todos_yet": "No todos yet",
+    "add_first_todo_above": "Add your first todo above.",
+    "edit_todo": "Edit todo",
+    "delete_todo": "Delete todo",
+    "delete_todo_title": "Delete todo?",
+    "delete_todo_message": "Are you sure you want to delete \"{title}\"?",
+    "delete": "Delete",
+    "save": "Save",
+    "todo_title": "Todo title"
   },
   "auth": {
     "log_in": "Log in",
@@ -47,7 +72,15 @@
     "back_to_login": "Back to login",
     "reset_link_sent": "Password reset link sent to your email.",
     "login_success": "You are signed in.",
-    "signup_success": "Your account is ready."
+    "signup_success": "Your account is ready.",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "show_confirm_password": "Show confirm password",
+    "hide_confirm_password": "Hide confirm password",
+    "signing_in": "Signing in...",
+    "creating_account": "Creating account...",
+    "sending_reset_link": "Sending reset link...",
+    "send_reset_link": "Send Reset Link"
   },
   "todos": {
     "title_required": "Todo title is required",

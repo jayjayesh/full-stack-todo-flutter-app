@@ -122,8 +122,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             .clearError(),
                         suffixIcon: IconButton(
                           tooltip: _obscurePassword
-                              ? 'Show password'
-                              : 'Hide password',
+                              ? 'auth.show_password'.tr()
+                              : 'auth.hide_password'.tr(),
                           icon: Icon(
                             _obscurePassword
                                 ? Icons.visibility_outlined
@@ -177,7 +177,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       SizedBox(height: AppSpacing.lg),
                       AppButton(
-                        label: 'Sign In',
+                        label: 'auth.sign_in'.tr(),
                         isLoading: isLoading,
                         onPressed: isLoading ? null : handleLogin,
                         width: ButtonSize.large,
@@ -185,7 +185,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       AuthStatusMessage(
                         isLoading: isLoading,
-                        loadingMessage: 'Signing in...',
+                        loadingMessage: 'auth.signing_in'.tr(),
                         errorMessage: errorMessage,
                       ),
                     ],

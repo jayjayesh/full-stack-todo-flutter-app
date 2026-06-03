@@ -244,3 +244,28 @@ Use go when the app is changing to a new main route.
 ```
 
 Auth success is a main route change, so `go` is the better fit.
+
+## Localization
+
+The app uses `easy_localization` with translation JSON files in:
+
+```text
+frontend/todoflutterapp/assets/translations/
+```
+
+The supported locales are:
+
+```text
+en  English
+hi  Hindi
+```
+
+The localization wrapper sets up the available locales, and `MaterialApp.router` reads the delegates from the active localization context.
+
+The onboarding, auth, and home screens now pull visible text from translation keys instead of hardcoded English strings.
+
+The important rule is:
+
+```text
+If text is visible to the user, put it behind a translation key.
+```

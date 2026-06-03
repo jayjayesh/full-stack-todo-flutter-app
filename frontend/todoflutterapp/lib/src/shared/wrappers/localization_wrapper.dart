@@ -14,10 +14,11 @@ class LocalizationWrapper extends StatelessWidget {
     return EasyLocalization(
       supportedLocales: const [
         Locale('en'),
-        Locale('es'),
+        Locale('hi'),
       ],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
+      // startLocale: const Locale('hi'),
       child: child,
     );
   }

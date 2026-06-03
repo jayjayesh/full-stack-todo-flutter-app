@@ -51,7 +51,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
       showToast(
         context,
-        message: 'Password reset link sent successfully',
+        message: 'auth.reset_link_sent'.tr(),
         status: 'success',
       );
       context.go(AppRoutes.login);
@@ -97,7 +97,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       ),
                       SizedBox(height: AppSpacing.lg),
                       AppButton(
-                        label: 'Send Reset Link',
+                        label: 'auth.send_reset_link'.tr(),
                         isLoading: isLoading,
                         onPressed: isLoading ? null : handleForgotPassword,
                         width: ButtonSize.large,
@@ -105,7 +105,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                       ),
                       AuthStatusMessage(
                         isLoading: isLoading,
-                        loadingMessage: 'Sending reset link...',
+                        loadingMessage: 'auth.sending_reset_link'.tr(),
                         errorMessage: errorMessage,
                       ),
                     ],
