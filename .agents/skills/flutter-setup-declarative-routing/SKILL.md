@@ -16,12 +16,13 @@ metadata:
 
 ## Core Concepts
 
-Use the `go_router` package for declarative routing in Flutter. It provides a robust API for complex routing scenarios, deep linking, and nested navigation. 
+Use the `go_router` package for declarative routing in Flutter. Prefer it as the default app navigation system instead of ad hoc `Navigator.push` screen transitions. It provides a robust API for complex routing scenarios, deep linking, auth redirects, and nested navigation.
 
 - **GoRouter**: The central configuration object defining the application's route tree.
 - **GoRoute**: A standard route mapping a URL path to a Flutter screen.
 - **ShellRoute / StatefulShellRoute**: Wraps child routes in a persistent UI shell (e.g., a `BottomNavigationBar`). `StatefulShellRoute` maintains the state of parallel navigation branches.
 - **Path URL Strategy**: Removes the default `#` fragment from web URLs, essential for clean deep linking across platforms.
+- **Navigation Actions**: Use `context.go()`, `context.push()`, `context.goNamed()`, and `context.pop()` from `go_router` instead of manually wiring screens together with the default `Navigator` API.
 
 ## Workflow: Initializing the Application and Router
 
@@ -253,3 +254,11 @@ context.goNamed('details', pathParameters: {'id': '123'});
 // Pops the current route
 context.pop();
 ```
+
+### Navigation Guidance
+Use `go_router` for everyday app navigation:
+
+- Use `context.go()` for primary screen changes, auth redirects, and tab changes.
+- Use `context.push()` for drill-down flows such as opening a details page on top of the current route.
+- Use `redirect` for auth gating and startup routing decisions.
+- Avoid using `Navigator.push`, `Navigator.pushReplacement`, or `Navigator.pop` as the default app-wide navigation approach unless you are handling a very local, framework-specific case.
