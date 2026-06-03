@@ -30,7 +30,7 @@ Utilize `package:test` as the standard testing library for Dart applications.
 * Validate outcomes using the `expect()` function alongside matchers (e.g., `equals()`, `isTrue`, `throwsA()`).
 * Write asynchronous tests using standard `async`/`await` syntax. The test runner automatically waits for the `Future` to complete.
 * Manage test setup and teardown using `setUp()` and `tearDown()` callbacks.
-* If testing code that relies on dependency injection, use `package:mockito` alongside `package:test` to generate mock objects, configure fixed scenarios, and verify interactions.
+* If testing code that relies on dependency injection, use `package:mocktail` alongside `package:test` to create mock objects, configure fixed scenarios, and verify interactions.
 
 ## Executing Tests
 Select the appropriate test runner based on the project type and test location.
@@ -82,19 +82,16 @@ void main() {
 }
 ```
 
-### Mocking with Mockito
+### Mocking with Mocktail
 Demonstrates configuring a mock object for dependency injection testing.
 
 ```dart
 import 'package:test/test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:my_package/api_client.dart';
 import 'package:my_package/data_service.dart';
 
-// Generate the mock using build_runner: dart run build_runner build
-@GenerateNiceMocks([MockSpec<ApiClient>()])
-import 'data_service_test.mocks.dart';
+class MockApiClient extends Mock implements ApiClient {}
 
 void main() {
   group('DataService', () {
@@ -108,15 +105,45 @@ void main() {
 
     test('returns parsed data on successful API call', () async {
       // Configure the mock
-      when(mockApiClient.get('/data')).thenAnswer((_) async => '{"id": 1}');
+      when(() => mockApiClient.get('/data')).thenAnswer((_) async => '{"id": 1}');
 
       // Execute the system under test
       final result = await dataService.fetchData();
 
       // Verify outcomes and interactions
       expect(result.id, equals(1));
-      verify(mockApiClient.get('/data')).called(1);
+      verify(() => mockApiClient.get('/data')).called(1);
     });
+  });
+}
+```
+
+### Mocktail and Non-Nullable Arguments
+When a mocked method accepts a non-nullable custom type, register a fallback value before using `any()` or similar matchers.
+
+```dart
+import 'package:test/test.dart';
+import 'package:mocktail/mocktail.dart';
+
+class Request {}
+
+abstract class Transport {
+  Future<String> send(Request request);
+}
+
+class MockTransport extends Mock implements Transport {}
+class FakeRequest extends Fake implements Request {}
+
+void main() {
+  setUpAll(() {
+    registerFallbackValue(FakeRequest());
+  });
+
+  test('stubs a method with a non-nullable custom argument', () {
+    final client = MockTransport();
+
+    when(() => client.send(any())).thenAnswer((_) async => 'ok');
+    expect(client.send(FakeRequest()), completes);
   });
 }
 ```
