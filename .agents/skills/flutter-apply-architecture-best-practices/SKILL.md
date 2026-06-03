@@ -1,6 +1,6 @@
 ---
 name: flutter-apply-architecture-best-practices
-description: Architects a Flutter application using the recommended layered approach (UI, Logic, Data). Use when structuring a new project or refactoring for scalability.
+description: Architects a Flutter application using the recommended layered approach (UI, Logic, Data) with Riverpod-based state management. Use when structuring a new project or refactoring for scalability.
 metadata:
   model: models/gemini-3.1-pro-preview
   last_modified: Tue, 21 Apr 2026 20:11:20 GMT
@@ -19,8 +19,8 @@ Enforce strict Separation of Concerns by dividing the application into distinct 
 
 ### UI Layer (Presentation)
 Implement the MVVM (Model-View-ViewModel) pattern to manage UI state and logic.
-*   **Views:** Write reusable, lean widgets. Restrict logic in Views to UI-specific operations (e.g., animations, layout constraints, simple routing). Pass all required data from the ViewModel.
-*   **ViewModels:** Manage UI state and handle user interactions. Extend `ChangeNotifier` (or use `Listenable`) to expose state. Expose immutable state snapshots to the View. Inject Repositories into ViewModels via the constructor.
+*   **Views:** Write reusable, lean widgets. Restrict logic in Views to UI-specific operations (e.g., animations, layout constraints, simple routing). Read state from Riverpod providers and pass user events back through notifier methods.
+*   **ViewModels:** Manage UI state and handle user interactions. Prefer Riverpod `Notifier`, `AsyncNotifier`, or `StateNotifier` classes to expose state. Expose immutable state snapshots to the View through providers.
 
 ### Data Layer
 Implement the Repository pattern to isolate data access logic and create a single source of truth.
@@ -47,7 +47,7 @@ lib/
     ├── core/           # Shared widgets, themes, typography
     └── features/
         └── [feature_name]/
-            ├── view_models/
+            ├── providers/
             └── views/
 ```
 
@@ -62,10 +62,10 @@ Follow this sequential workflow when adding a new feature to the application. Co
 - [ ] **Step 4: Apply Conditional Logic (Domain Layer).**
   - *If the feature requires complex data transformation or cross-repository logic:* Create a Use Case class.
   - *If the feature is a simple CRUD operation:* Skip to Step 5.
-- [ ] **Step 5: Implement the ViewModel.** Create the ViewModel extending `ChangeNotifier`. Inject required Repositories/Use Cases. Expose immutable state and command methods.
-- [ ] **Step 6: Implement the View.** Create the UI widget. Use `ListenableBuilder` or `AnimatedBuilder` to listen to ViewModel changes.
-- [ ] **Step 7: Inject Dependencies.** Register the new Service, Repository, and ViewModel in the dependency injection container (e.g., `provider` or `get_it`).
-- [ ] **Step 8: Run Validator.** Execute unit tests for the ViewModel and Repository.
+- [ ] **Step 5: Implement Riverpod State.** Create the feature's `Notifier`, `AsyncNotifier`, or `StateNotifier`. Read Repositories/Use Cases through providers and keep state immutable.
+- [ ] **Step 6: Implement the View.** Create the UI widget. Use `ConsumerWidget`, `ConsumerStatefulWidget`, or `HookConsumerWidget` and read state with `ref.watch(...)`.
+- [ ] **Step 7: Inject Dependencies.** Register the new Service, Repository, and notifier providers using Riverpod providers.
+- [ ] **Step 8: Run Validator.** Execute unit tests for the notifier and repository.
   - *Feedback Loop:* Run tests -> Review failures -> Fix logic -> Re-run until passing.
 
 ## Examples
@@ -100,63 +100,64 @@ class UserRepository {
 ### UI Layer: ViewModel and View
 
 ```dart
-// 3. ViewModel (State management and presentation logic)
-class ProfileViewModel extends ChangeNotifier {
-  ProfileViewModel({required UserRepository userRepository}) 
-      : _userRepository = userRepository;
+// 3. Riverpod state (State management and presentation logic)
+final todoListProvider =
+    AsyncNotifierProvider<TodoListNotifier, List<Todo>>(
+  TodoListNotifier.new,
+);
 
-  final UserRepository _userRepository;
+class TodoListNotifier extends AsyncNotifier<List<Todo>> {
+  @override
+  Future<List<Todo>> build() async {
+    final todoRepository = ref.read(todoRepositoryProvider);
+    return todoRepository.fetchTodos();
+  }
 
-  User? _user;
-  User? get user => _user;
-
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-
-  Future<void> loadProfile(String id) async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      _user = await _userRepository.getUser(id);
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
+  Future<void> refreshTodos() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final todoRepository = ref.read(todoRepositoryProvider);
+      return todoRepository.fetchTodos();
+    });
   }
 }
 
 // 4. View (Dumb UI component)
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key, required this.viewModel});
-
-  final ProfileViewModel viewModel;
+class TodoListView extends ConsumerWidget {
+  const TodoListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: viewModel,
-      builder: (context, _) {
-        if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        
-        final user = viewModel.user;
-        if (user == null) {
-          return const Center(child: Text('User not found'));
-        }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final todoState = ref.watch(todoListProvider);
 
-        return Column(
-          children: [
-            Text(user.name),
-            ElevatedButton(
-              onPressed: () => viewModel.loadProfile(user.id),
-              child: const Text('Refresh'),
-            ),
-          ],
-        );
-      },
+    return todoState.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, _) => Center(child: Text('Error: $error')),
+      data: (todos) => Column(
+        children: [
+          for (final todo in todos) Text(todo.title),
+          ElevatedButton(
+            onPressed: () =>
+                ref.read(todoListProvider.notifier).refreshTodos(),
+            child: const Text('Refresh'),
+          ),
+        ],
+      ),
     );
   }
 }
+```
+
+### Riverpod Dependency Injection
+
+Use providers to wire up the data layer and expose it to the UI.
+
+```dart
+final apiClientProvider = Provider<ApiClient>((ref) {
+  return ApiClient();
+});
+
+final todoRepositoryProvider = Provider<TodoRepository>((ref) {
+  return TodoRepository(apiClient: ref.read(apiClientProvider));
+});
 ```
